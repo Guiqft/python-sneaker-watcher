@@ -1,24 +1,35 @@
-from selenium import webdriver
-
-driver = webdriver.Firefox()
-
-
-def getting_all_airforces():
-    # Getting the list of all Nike AirForces with size 41 avaiable
-    driver.get(
-        'https://www.authenticfeet.com.br/masculino/tenis/41/air%20force?PS=50&map=c,c,specificationFilter_5,ft')
-
-    qty_avaiable = int(driver.find_element_by_xpath(
-        '/html/body/div[6]/div[6]/div/div[2]/div[2]/div/p[1]/span[1]/span[2]').text)
-
-    sneakers = driver.find_elements_by_xpath(
-        '/html/body/div[6]/div[6]/div/div[2]/div[2]/div/div[3]/div[2]/div/ul/li/div/div[1]/div/div/a')
-
-    return qty_avaiable, [sneaker.get_attribute('title') for sneaker in sneakers]
+import requests
+from bs4 import BeautifulSoup
 
 
-sneakers = getting_all_airforces()
-print(sneakers[0])
-# if int(sneakers[1]) > 1:
-#     print('true')
-# print(getting_all_airforces())
+def get_page(url):
+    headers = {
+        "User Agent": 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36',
+    }
+
+    r = requests.get(url, headers=headers)
+    return BeautifulSoup(r.content, 'html.parser')
+
+
+def get_qty_seach(page):
+    result = page.find_all("p", class_="searchResultsTime")[
+        0].find("span", class_="value")
+    return int(result.text)
+
+
+def get_sneakers_data(page):
+    sneakers = page.find_all("div", class_="shelf-image")
+
+    result = []
+    for sneaker in sneakers:
+        result.append(sneaker.find(
+            "a", class_="shelf-image-link img-responsive"))
+
+    return result
+
+
+# AuthenticFeet URL
+AF_URL = 'https://www.authenticfeet.com.br/masculino/tenis/41/air%20force?PS=24&map=c,c,specificationFilter_5,ft'
+AF_page = get_page(AF_URL)
+
+print(get_sneakers_data(AF_page))
