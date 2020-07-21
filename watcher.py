@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+from decimal import Decimal
 
 
 def get_page(url):
@@ -18,12 +19,21 @@ def get_qty_seach(page):
 
 
 def get_sneakers_data(page):
-    sneakers = page.find_all("div", class_="shelf-image")
+    sneakers = page.find_all(
+        "li", class_="tenis-mochilas-e-acessorios-masculinos-|-authentic-feet last")
 
     result = []
     for sneaker in sneakers:
-        result.append(sneaker.find(
-            "a", class_="shelf-image-link img-responsive"))
+        t = sneaker.find("a", class_="shelf-image-link img-responsive")
+
+        object = {
+            "title": t.get('title'),
+            "img_src": t.find("img").get('src'),
+            "price": float(sneaker.find("span", class_="best-price").text.strip()[3:].replace(',', '.')),
+            "url": t.get('href')
+        }
+
+        result.append(object)
 
     return result
 
