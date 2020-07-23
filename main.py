@@ -1,5 +1,5 @@
-from scraper import *
-from mail_sender import *
+from scraper import get_page, get_qty_seach, get_sneakers_data
+from mail_sender import fill_email_template, send_mail
 
 # AuthenticFeet URL
 AF_URL = 'https://www.authenticfeet.com.br/masculino/tenis/41/air%20force?PS=24&map=c,c,specificationFilter_5,ft'

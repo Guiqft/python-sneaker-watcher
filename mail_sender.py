@@ -3,13 +3,15 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from jinja2 import Environment, FileSystemLoader
 
-gmail_user = 'exampe@e.com'
-gmail_password = 'password'
+from config import *
+
+gmail_user = user_email
+gmail_password = user_password
+to_email = receiver_email
 
 
 def send_mail(bodyContent, qty_sneaker):
     try:
-        to_email = 'receiver@e.com'
         subject = "Actually are %s Air Force's avaiable at AuthenticFeet.com.br" % qty_sneaker
 
         message = MIMEMultipart()
